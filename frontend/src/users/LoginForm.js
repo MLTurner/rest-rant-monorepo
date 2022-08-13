@@ -17,10 +17,10 @@ function LoginForm() {
 
     async function handleSubmit(e) {
         e.preventDefault()
-       const response = await fetch(`http://localhost5000/authentication/`, {
+       const response = await fetch(`http://localhost:5000/authentication/`, {
         method: 'POST',
         headers: {
-            'Content-Type': application/json
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(credentials)
        })
@@ -28,9 +28,11 @@ function LoginForm() {
        
        if (response.status === 200) {
         setCurrentUser(data.user)
+        console.log('successfully logged in')
         history.push(`/`)
        } else {
         setErrorMessage(data.message)
+        console.log('unable to log in')
        }
     }
 
