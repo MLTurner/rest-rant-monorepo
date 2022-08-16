@@ -28,6 +28,8 @@ function LoginForm() {
        
        if (response.status === 200) {
         setCurrentUser(data.user)
+        localStorage.setItem('token', data.token)
+        console.log(data.token)
         console.log('successfully logged in')
         history.push(`/`)
        } else {
