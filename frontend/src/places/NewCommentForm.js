@@ -1,30 +1,28 @@
-import { useState, useEffect } from "react"
-//import { useHistory } from "react-router"
+import { useState, useEffect, useContext } from "react"
+import { useHistory } from "react-router"
+import { CurrentUser, currentUser } from '../contexts/CurrentUser'
 
 function NewCommentForm({ place, onSubmit }) {
 
-    const [authors, setAuthors] = useState([])
+    const { currentUser } = useContext(CurrentUser)
 
     const [comment, setComment] = useState({
         content: '',
         stars: 3,
         rant: false,
-        authorId: ''
     })
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch(`http://localhost:5000/users`)
-            const users = await response.json()
-            setComment({ ...comment, authorId: users[0]?.userId})
-            setAuthors(users)
-        }
-        fetchData()
-    }, [])
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const response = await fetch(`http://localhost:5000/users`)
+    //         const users = await response.json()
+    //         setComment({ ...comment, authorId: users[0]?.userId})
+    //         setAuthors(users)
+    //     }
+    //     fetchData()
+    // }, [])
 
-    let authorOptions = authors.map(author => {
-        return <option key={author.userId} value={author.userId}>{author.firstName} {author.lastName}</option>
-    })
+    
 
     function handleSubmit(e) {
         e.preventDefault()
@@ -33,8 +31,11 @@ function NewCommentForm({ place, onSubmit }) {
             content: '',
             stars: 3,
             rant: false,
-            authorId: authors[0]?.userId
         })
+    }
+
+    if(!currentUser){
+        return <p>You must be logged in to leave a rant or rave.</p>
     }
 
     return (
@@ -55,9 +56,18 @@ function NewCommentForm({ place, onSubmit }) {
             <div className="row">
                 <div className="form-group col-sm-4">
                     <label htmlFor="state">Author</label>
-                    <select className="form-control" value={comment.authorId} onChange={e => setComment({ ...comment, authorId: e.target.value })}>
-                        {authorOptions}
-                    </select>
+                     <label htmlFor="stars">Star Rating</label>
+                    <input
+                        value={comment.stars}
+                        onChange={e => setComment({ ...comment, stars: e.target.value })}
+                        type="range"
+                        step="0.5"
+                        min="1"
+                        max="5"
+                        id="stars"
+                        name="stars"
+                        className="form-control"
+                    />
                 </div>
                 <div className="form-group col-sm-4">
                     <label htmlFor="stars">Star Rating</label>
