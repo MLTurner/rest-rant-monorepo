@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const db = require("../models");
 const bcrypt = require("bcrypt");
-const jwt = require("json-web-token");
+const jwt = require('json-web-token');
 
 const { User } = db;
 
@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
     });
   } else {
     const result = await jwt.encode(process.env.JWT_SECRET, {
-      id: user.userID,
+      id: user.userId
     });
     res.json({ user: user, token: result.value });
   }

@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
     const places = await Place.findAll()
     res.json(places)
-})
+}) 
 
 
 router.get('/:placeId', async (req, res) => {
@@ -53,7 +53,7 @@ router.put('/:placeId', async (req, res) => {
             where: { placeId: placeId },
         })
         if (!place) {
-            res.status(404).json({ message: `Could not find place with id "${placeId}"` })
+            res.status(404).json({ message: `Could not find place with id ${placeId}` })
         } else {
             Object.assign(place, req.body)
             await place.save()
