@@ -34,6 +34,7 @@ function NewCommentForm({ place, onSubmit }) {
         })
     }
 
+   
     if(!currentUser){
         return <p>You must be logged in to leave a rant or rave.</p>
     }
