@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const { JWTError } = require('json-web-token')
 const db = require("../models")
 
 const { Place, Comment, User } = db
@@ -94,13 +95,29 @@ router.post('/:placeId/comments', async (req, res) => {
         return res.status(404).json({ message: `Could not find place with id "${placeId}"` })
     }
 
-    if (!req.currentUser) {
-        return res.status(404).json({ message: `You must be logged in to leave a rand or rave.` })
+    let currentUser;
+    try {
+        const [method, token] = req.headers.authorization.split('')
+        if (method == 'Bearer') {
+            const result = await jwt.decode(process.env.JWT_SECRET, token)
+            const {id} = result.value
+            currentUser = await User.findOne({
+                where: {
+                    userId: id
+                }
+            })
+        }
+    } catch {
+        currentUser = null
     }
+
+     if (!req.currentUser) {
+         return res.status(404).json({ message: `You must be logged in to leave a rant or rave.` })
+     }
 
     const comment = await Comment.create({
         ...req.body,
-        authorId: req.currentUser.userId,
+        authorId: currentUser.userId,
         placeId: placeId
     })
 
